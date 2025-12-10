@@ -133,31 +133,31 @@ export class AuthService {
     let isVerified = user.isEmailVerified;
 
 
-    if (!isVerified) {
-      otp = await this.saveOtp(user.email);
-      const html = generateRegisterOtpEmailTemplate(otp);
-      await this.mailgunEmailService.sendEmail(
-        user.email,
-        "Account Registration Verification Code",
-        "",
-        html
-      );
+    // if (!isVerified) {
+    //   otp = await this.saveOtp(user.email);
+    //   const html = generateRegisterOtpEmailTemplate(otp);
+    //   await this.mailgunEmailService.sendEmail(
+    //     user.email,
+    //     "Account Registration Verification Code",
+    //     "",
+    //     html
+    //   );
 
-      return {
-        message: "Email not verified. OTP sent.",
-        otpSent: true,
-        verified: false,
-        user: {
-          id: user.id,
-          email: user.email,
-          fullName: user.fullName,
-          accountType: user.accountType,
-          isEmailVerified: user.isEmailVerified,
-        },
-      };
-    }
+    //   return {
+    //     message: "Email not verified. OTP sent.",
+    //     otpSent: true,
+    //     verified: false,
+    //     user: {
+    //       id: user.id,
+    //       email: user.email,
+    //       fullName: user.fullName,
+    //       accountType: user.accountType,
+    //       isEmailVerified: user.isEmailVerified,
+    //     },
+    //   };
+    // }
 
-    // Agar verified hai, token generate karo
+    // Agar verified hai ya nhi dono case mai token generate hoga future mai email verified hoga tb hi token generate hoga
     const tokens = await this.getTokens(user.id, user.email, user.accountType);
     await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
 
@@ -182,10 +182,14 @@ export class AuthService {
       throw new NotFoundException("User not found");
     }
     const otp = await this.saveOtp(user.email);
-    const otpRecord = await this.prisma.otp.findFirst({
-      where: { email: user.email },
-      orderBy: { createdAt: 'desc' },
-    });
+    // const otpRecord = await this.prisma.otp.findFirst({
+    //   where: { email: user.email },
+    //   orderBy: { createdAt: 'desc' },
+    // });
+
+    // ------------------------------remove this--------
+    const otpRecord={expiresAt:""}
+    // ------------------------------------------
 
     const expiresAt = otpRecord ? otpRecord.expiresAt : null;
 
@@ -207,10 +211,14 @@ export class AuthService {
     const user = await this.usersService.create(registerDto);
 
     const otp = await this.saveOtp(user.email);
-    const otpRecord = await this.prisma.otp.findFirst({
-      where: { email: user.email },
-      orderBy: { createdAt: 'desc' },
-    });
+    // const otpRecord = await this.prisma.otp.findFirst({
+    //   where: { email: user.email },
+    //   orderBy: { createdAt: 'desc' },
+    // });
+
+    // remove this------------
+     const otpRecord={expiresAt:""}
+    //  ------------------------------
 
 
     const expiresAt = otpRecord ? otpRecord.expiresAt : null;
@@ -291,7 +299,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get<string>("JWT_SECRET"),
-          expiresIn: this.configService.get<string>("JWT_EXPIRES_IN"),
+          privateKey: this.configService.get<string>("JWT_EXPIRES_IN"),
         }
       ),
       this.jwtService.signAsync(
@@ -302,7 +310,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
-          expiresIn: this.configService.get<string>("JWT_REFRESH_EXPIRES_IN"),
+          privateKey: this.configService.get<string>("JWT_REFRESH_EXPIRES_IN"),
         }
       ),
     ]);
@@ -347,27 +355,28 @@ export class AuthService {
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 10);
 
-    const existingOtp = await this.prisma.otp.findFirst({
-      where: {
-        email,
-      },
-    });
+    // const existingOtp = await this.prisma.otp.findFirst({
+    //   where: {
+    //     email,
+    //   },
+    // });
+    const existingOtp="faj"
 
-    if (existingOtp) {
-      await this.prisma.otp.delete({
-        where: {
-          id: existingOtp.id,
-        },
-      });
-    }
+    // if (existingOtp) {
+    //   await this.prisma.otp.delete({
+    //     where: {
+    //       id: existingOtp.id,
+    //     },
+    //   });
+    // }
 
-    await this.prisma.otp.create({
-      data: {
-        email,
-        otp,
-        expiresAt,
-      },
-    });
+    // await this.prisma.otp.create({
+    //   data: {
+    //     email,
+    //     otp,
+    //     expiresAt,
+    //   },
+    // });
 
     return otp;
   }
@@ -381,28 +390,28 @@ export class AuthService {
       throw new NotFoundException("User not found");
     }
 
-    const otp = await this.prisma.otp.findFirst({
-      where: {
-        email: verifyOtpDto.email,
-        otp: verifyOtpDto.otp,
-        expiresAt: { gt: new Date() },
-      },
-    });
+    // const otp = await this.prisma.otp.findFirst({
+    //   where: {
+    //     email: verifyOtpDto.email,
+    //     otp: verifyOtpDto.otp,
+    //     expiresAt: { gt: new Date() },
+    //   },
+    // });
 
-    if (!otp) {
-      throw new BadRequestException("Invalid or Expired OTP");
-    }
+    // if (!otp) {
+    //   throw new BadRequestException("Invalid or Expired OTP");
+    // }
 
     if (!user.isEmailVerified) {
       await this.usersService.updateEmailVerified(user.id, true);
       user.isEmailVerified = true;
     }
 
-    await this.prisma.otp.delete({
-      where: {
-        id: otp.id,
-      },
-    });
+    // await this.prisma.otp.delete({
+    //   where: {
+    //     id: otp.id,
+    //   },
+    // });
 
     const tokens = await this.getTokens(user.id, user.email, user.accountType);
     await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
@@ -422,17 +431,17 @@ export class AuthService {
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
     //verify otp
-    const otp = await this.prisma.otp.findFirst({
-      where: {
-        email: resetPasswordDto.email,
-        otp: resetPasswordDto.otp,
-        expiresAt: { gt: new Date() },
-      },
-    });
+    // const otp = await this.prisma.otp.findFirst({
+    //   where: {
+    //     email: resetPasswordDto.email,
+    //     otp: resetPasswordDto.otp,
+    //     expiresAt: { gt: new Date() },
+    //   },
+    // });
 
-    if (!otp) {
-      throw new BadRequestException("Invalid or Expired OTP");
-    }
+    // if (!otp) {
+    //   throw new BadRequestException("Invalid or Expired OTP");
+    // }
 
     const user = await this.usersService.findByEmail(
       resetPasswordDto.email,
@@ -473,11 +482,11 @@ export class AuthService {
     });
 
     //delete otp after verify
-    await this.prisma.otp.delete({
-      where: {
-        id: otp.id,
-      },
-    });
+    // await this.prisma.otp.delete({
+    //   where: {
+    //     id: otp.id,
+    //   },
+    // });
 
     return { message: "Password reset successfully" };
   }

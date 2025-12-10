@@ -17,7 +17,7 @@ export class CreateUserDto {
   fullName: string;
 
   @IsIn([
-    AccountType.SUPERADMIN,
+    AccountType.ADMIN,
     AccountType.USER
   ])
   @IsOptional()

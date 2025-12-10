@@ -15,7 +15,7 @@ datasource db {
 }
 
 enum AccountType {
-  SUPERADMIN
+  ADMIN
   USER
 }
 
@@ -38,8 +38,6 @@ model User {
   email           String      @unique
   phone           String?
   password        String?
-  provider        String?
-  providerId      String?
   dateOfBirth     DateTime?
   gender          Gender?
   currentCity     String?
@@ -48,17 +46,18 @@ model User {
   isEmailVerified Boolean     @default(false)
   refreshToken    String?
   isActive        Boolean     @default(true)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  attendence      Attendence[]  
 }
 
-model Otp {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String?
-  phone     String?
-  otp       String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+model Attendence{
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  imagePath       String
+  location        String
+  userId          String
+  createdAt       DateTime @default(now())
+  user            User @relation(fields:[userId],references:[id] )
+
 }
+

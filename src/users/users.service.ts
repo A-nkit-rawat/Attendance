@@ -30,6 +30,7 @@ export class UsersService {
   ) { }
 
   async create(createUserDto: CreateUserDto) {
+    console.log(createUserDto)
     createUserDto.email = createUserDto.email.toLowerCase();
 
     if (!createUserDto.accountType) {
@@ -246,8 +247,6 @@ export class UsersService {
         email: socialUser.email,
         fullName: socialUser.fullName,
         profilePic: socialUser.profilePic,
-        provider: socialUser.provider,
-        providerId: socialUser.providerId,
         isEmailVerified: true,
       },
     });

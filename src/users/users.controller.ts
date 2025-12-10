@@ -25,14 +25,14 @@ export class UsersController {
 
   @Post()
   @UseGuards(AccountTypesGuard)
-  @AccountTypes(AccountType.SUPERADMIN)
+  @AccountTypes(AccountType.ADMIN)
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
   @UseGuards(AccountTypesGuard)
-  @AccountTypes(AccountType.SUPERADMIN)
+  @AccountTypes(AccountType.ADMIN)
   findAll(@Query("limit") limit?: string, @Query("page") page?: string) {
     const pageNumber = parseInt(page ?? "1");
     const perPage = parseInt(limit ?? "10");
@@ -42,7 +42,7 @@ export class UsersController {
 
   @Get("search")
   @UseGuards(AccountTypesGuard)
-  @AccountTypes(AccountType.SUPERADMIN)
+  @AccountTypes(AccountType.ADMIN)
   searchUser(
     @Query("q") query: string,
     @Query("limit") limit?: string,
@@ -66,14 +66,14 @@ export class UsersController {
 
   @Get(":id")
   @UseGuards(AccountTypesGuard)
-  @AccountTypes(AccountType.SUPERADMIN)
+  @AccountTypes(AccountType.ADMIN)
   findOne(@Param("id") id: string) {
     return this.usersService.findOne(id);
   }
 
   @Patch(":id")
   @UseGuards(AccountTypesGuard)
-  @AccountTypes(AccountType.SUPERADMIN)
+  @AccountTypes(AccountType.ADMIN)
   updateProfile(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
@@ -87,7 +87,7 @@ export class UsersController {
 
   @Delete(":id")
   @UseGuards(AccountTypesGuard)
-  @AccountTypes(AccountType.SUPERADMIN)
+  @AccountTypes(AccountType.ADMIN)
   removeUser(@Param("id") id: string) {
     return this.usersService.remove(id);
   }

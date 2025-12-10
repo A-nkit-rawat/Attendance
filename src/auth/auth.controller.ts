@@ -195,17 +195,17 @@ export class AuthController {
   }
 
 
-  @Public()
-  @Post("forget-password")
-  forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
-    const { email } = forgetPasswordDto;
+  // @Public()
+  // @Post("forget-password")
+  // forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
+  //   const { email } = forgetPasswordDto;
 
-    if (!email) {
-      throw new BadRequestException("Email field is required");
-    }
+  //   if (!email) {
+  //     throw new BadRequestException("Email field is required");
+  //   }
 
-    return this.authService.sendResetOtp(forgetPasswordDto);
-  }
+  //   return this.authService.sendResetOtp(forgetPasswordDto);
+  // }
 
   @Public()
   @Post("reset-password")
@@ -219,17 +219,17 @@ export class AuthController {
     return this.authService.resetPassword(resetPasswordDto);
   }
 
-  @Public()
-  @Post("verify-otp")
-  async verifyOtp(@Body() dto: VerifyOtpDto) {
-    const { email } = dto;
+  // @Public()
+  // @Post("verify-otp")
+  // async verifyOtp(@Body() dto: VerifyOtpDto) {
+  //   const { email } = dto;
 
-    if (!email) {
-      throw new BadRequestException("Email field is required");
-    }
+  //   if (!email) {
+  //     throw new BadRequestException("Email field is required");
+  //   }
 
-    return this.authService.verifyOtp(dto);
-  }
+  //   return this.authService.verifyOtp(dto);
+  // }
 
   @Post("change-password")
   changePassword(@Body() changePasswordDto: ChangePasswordDto, @Req() req) {

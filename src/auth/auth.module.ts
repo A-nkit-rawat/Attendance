@@ -16,9 +16,6 @@ import { MailGunEmailModule } from 'src/common/services/mailgun-email.module';
     UsersModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: {
-        expiresIn: jwtConstants.expiresIn,
-      },
     }),
     EmailModule,
     MailGunEmailModule,

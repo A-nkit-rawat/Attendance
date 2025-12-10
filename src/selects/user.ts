@@ -4,8 +4,6 @@ export const UserSelect = {
   phone: true,
   fullName: true,
   accountType: true,
-  provider: true,
-  providerId: true,
   dateOfBirth: true,
   gender: true,
   currentCity: true,
